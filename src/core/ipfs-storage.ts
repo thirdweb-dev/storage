@@ -15,6 +15,7 @@ import { FileOrBuffer, JsonObject } from "../types";
 import { UploadProgressEvent } from "../types/events";
 import { PinataUploader } from "../uploaders/pinata-uploader";
 import { File } from "@web-std/file";
+import fetch from "cross-fetch";
 import FormData from "form-data";
 
 /**

@@ -162,7 +162,9 @@ export class PinataUploader implements IStorageUpload {
 
       const filepath = `files/${fileName}`;
       if (fileNames.indexOf(fileName) > -1) {
-        throw new Error(`Duplicate File Name: ${fileName}`);
+        throw new Error(
+          `DUPLICATE_FILE_NAME_ERROR: File name ${fileName} was passed for more than one file.`
+        );
       }
       fileNames.push(fileName);
       if (typeof window === "undefined") {
