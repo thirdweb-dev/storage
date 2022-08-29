@@ -1,8 +1,8 @@
 import { PINATA_IPFS_URL, TW_IPFS_SERVER_URL } from "../constants/urls";
+import { isFileInstance } from "../helpers/storage";
 import { CidWithFileName, IStorageUpload } from "../interfaces/IStorageUpload";
 import { FileOrBuffer } from "../types";
 import { UploadProgressEvent } from "../types/events";
-import { File } from "@web-std/file";
 import FormData from "form-data";
 
 /**
@@ -141,7 +141,7 @@ export class PinataUploader implements IStorageUpload {
       // if it is a file, we passthrough the file extensions,
       // if it is a buffer or string, the filename would be fileStartNumber + index
       // if it is a buffer or string with names, the filename would be the name
-      if (file instanceof File) {
+      if (isFileInstance(file)) {
         let extensions = "";
         if (file.name) {
           const extensionStartIndex = file.name.lastIndexOf(".");
@@ -152,8 +152,8 @@ export class PinataUploader implements IStorageUpload {
         fileName = `${i + fileStartNumber}${extensions}`;
       } else if (file instanceof Buffer || typeof file === "string") {
         fileName = `${i + fileStartNumber}`;
-      } else if (file && file.name && file?.data) {
-        fileData = file?.data;
+      } else if (file && file.name && (file as any)?.data) {
+        fileData = (file as any)?.data;
         fileName = `${file.name}`;
       } else {
         // default behavior

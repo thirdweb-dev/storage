@@ -4,6 +4,7 @@ import {
   PUBLIC_GATEWAYS,
 } from "../constants/urls";
 import {
+  isFileInstance,
   replaceFilePropertiesWithHashes,
   replaceGatewayUrlWithHash,
   replaceHashWithGatewayUrl,
@@ -14,7 +15,6 @@ import { IStorageUpload, UploadResult } from "../interfaces/IStorageUpload";
 import { FileOrBuffer, JsonObject } from "../types";
 import { UploadProgressEvent } from "../types/events";
 import { PinataUploader } from "../uploaders/pinata-uploader";
-import { File } from "@web-std/file";
 import fetch from "cross-fetch";
 import FormData from "form-data";
 
@@ -278,7 +278,7 @@ export class IpfsStorage implements IStorage {
     } else if (object) {
       const values = Object.values(object);
       for (const val of values) {
-        if (val instanceof File || val instanceof Buffer) {
+        if (isFileInstance(val) || val instanceof Buffer) {
           files.push(val);
         } else if (typeof val === "object") {
           this.buildFilePropertiesMap(val as JsonObject, files);
