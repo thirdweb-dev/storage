@@ -1,8 +1,8 @@
+import { isFileInstance } from "../helpers/storage";
 import { IStorage } from "../interfaces/IStorage";
 import { UploadResult } from "../interfaces/IStorageUpload";
 import { FileOrBuffer, JsonObject } from "../types";
 import { UploadProgressEvent } from "../types/events";
-import { File } from "@web-std/file";
 
 /**
  * Fetch and upload files to IPFS or any other storage.
@@ -74,7 +74,7 @@ export class RemoteStorage {
   ): Promise<UploadResult> {
     if (!Array.isArray(data)) {
       if (
-        data instanceof File ||
+        isFileInstance(data) ||
         data instanceof Buffer ||
         (data.name && data.data && data.data instanceof Buffer)
       ) {
@@ -86,12 +86,12 @@ export class RemoteStorage {
 
     const allFiles = (data as any[]).filter(
       (item: any) =>
-        item instanceof File ||
+        isFileInstance(item) ||
         item instanceof Buffer ||
         (item.name && item.data && item.data instanceof Buffer)
     );
     const allObjects = (data as any[]).filter(
-      (item: any) => !(item instanceof File) && !(item instanceof Buffer)
+      (item: any) => !isFileInstance(item) && !(item instanceof Buffer)
     );
     if (allFiles.length === data.length) {
       return this.uploadBatch(data as FileOrBuffer[], options);

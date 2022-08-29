@@ -1,5 +1,8 @@
 import { Json } from "../types";
-import { File } from "@web-std/file";
+
+export function isFileInstance(data: any): data is File {
+  return global.File && data instanceof File;
+}
 
 /**
  * Given a map of file hashes to ipfs uris, this function will hash
@@ -20,7 +23,7 @@ export function replaceFilePropertiesWithHashes(
   const keys = Object.keys(object);
   for (const key in keys) {
     const val = object[keys[key]];
-    const isFile = val instanceof File || val instanceof Buffer;
+    const isFile = isFileInstance(val) || val instanceof Buffer;
     if (typeof val === "object" && !isFile) {
       replaceFilePropertiesWithHashes(val, cids);
       continue;
@@ -91,7 +94,7 @@ export function replaceGatewayUrlWithHash(
     object[keys[key]] = toIPFSHash(val, scheme, gatewayUrl);
     if (Array.isArray(val)) {
       object[keys[key]] = val.map((el) => {
-        const isFile = el instanceof File || el instanceof Buffer;
+        const isFile = isFileInstance(el) || el instanceof Buffer;
         if (typeof el === "object" && !isFile) {
           return replaceGatewayUrlWithHash(el, scheme, gatewayUrl);
         } else {
@@ -99,7 +102,7 @@ export function replaceGatewayUrlWithHash(
         }
       });
     }
-    const isFile = val instanceof File || val instanceof Buffer;
+    const isFile = isFileInstance(val) || val instanceof Buffer;
     if (typeof val === "object" && !isFile) {
       replaceGatewayUrlWithHash(val, scheme, gatewayUrl);
     }
